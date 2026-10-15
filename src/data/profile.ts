@@ -6,6 +6,11 @@ export const profile = {
   linkedin: '',
   github: '',
   cv: '/tomas-ferrer-resume.pdf',
+  skills: [
+    { category: 'Programming & data', items: ['Python', 'SQL', 'Data engineering'] },
+    { category: 'Machine learning', items: ['Machine learning', 'Forecasting', 'Classification', 'Anomaly detection'] },
+    { category: 'Statistics & experimentation', items: ['Statistical modeling', 'Causal inference', 'Experimentation', 'Bayesian statistics'] },
+  ],
   experience: [
     {
       company: 'Block / Cash App',
