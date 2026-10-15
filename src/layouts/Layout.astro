@@ -3,7 +3,7 @@ import { profile } from '../data/profile';
 import '../styles/global.css';
 interface Props { title?: string; description?: string; home?: boolean }
 const { title = 'Tomas Ferrer — Product Data Scientist', description = profile.description, home = false } = Astro.props;
-const nav = [['about', 'About me'], ['experience', 'Experience'], ...(profile.education.length ? [['education', 'Education']] : []), ['work', 'Selected work'], ['contact', 'Contact']];
+const nav = [['about', 'About me'], ['experience', 'Experience'], ...(profile.education.length ? [['education', 'Education']] : []), ['work', 'Selected work'], ['skills', 'Skills'], ['contact', 'Contact']];
 ---
 <!doctype html>
 <html lang="en">
@@ -29,7 +29,7 @@ const nav = [['about', 'About me'], ['experience', 'Experience'], ...(profile.ed
       <nav id="navigation" aria-label="Main navigation">
         {nav.map(([id, label], index) => <a href={`${home ? '' : '/'}#${id}`} data-section={id} class:list={{ active: home && index === 0 }} aria-current={home && index === 0 ? 'location' : undefined}><span class="nav-number">0{index + 1}</span>{label}<span class="nav-arrow" aria-hidden="true">↗</span></a>)}
       </nav>
-      <div class="sidebar-bottom"><span class="small-label">A PERSONAL CORNER OF THE INTERNET</span><a href="https://tomasferrer.com">tomasferrer.com <span aria-hidden="true">↗</span></a>{profile.cv && <a href={profile.cv} download>Download CV ↓</a>}</div>
+      <div class="sidebar-bottom"><a href="https://tomasferrer.com">tomasferrer.com <span aria-hidden="true">↗</span></a>{profile.cv && <a href={profile.cv} download>Download CV ↓</a>}</div>
     </aside>
     <main id="main" tabindex="-1"><slot /><footer><span>© {new Date().getFullYear()} Tomas Ferrer</span><span>Made with care & Astro.</span><a href="#main">Back to top ↑</a></footer></main>
     <script>
