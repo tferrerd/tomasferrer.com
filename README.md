@@ -1,2 +1,27 @@
-# tomasferrer.com
-Personal website for Tomas Ferrer, built with Astro.
+# Tomas Ferrer — personal website
+
+Astro source for https://tomasferrer.com.
+
+## Local development
+
+Use Node.js 24 LTS, then run:
+
+```sh
+npm ci
+npm run dev
+```
+
+## Publishing
+
+In repository Settings → Pages, choose GitHub Actions as the source. Pushes to `main` build and deploy automatically using the official Astro action.
+
+Set the custom domain to `tomasferrer.com` in Settings → Pages, then configure the records described in `docs/domain-setup.md`. Enable HTTPS once the certificate is available.
+
+## Editing
+
+- `src/data/profile.ts`: experience, education, contact information, and logo paths.
+- `src/pages/index.astro`: homepage copy and Selected Work.
+- `src/styles/global.css`: styling.
+- `public/`: downloadable résumé, photo, and logos.
+
+`npm run build` generates the static site in `dist/`.
