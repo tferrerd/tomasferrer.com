@@ -1,0 +1,58 @@
+---
+import { profile } from '../data/profile';
+import '../styles/global.css';
+interface Props { title?: string; description?: string; home?: boolean }
+const { title = 'Tomas Ferrer — Product Data Scientist', description = profile.description, home = false } = Astro.props;
+const nav = [['about', 'About me'], ['experience', 'Experience'], ...(profile.education.length ? [['education', 'Education']] : []), ['work', 'Selected work'], ['contact', 'Contact']];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title><meta name="description" content={description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" /><meta property="og:title" content={title} /><meta property="og:description" content={description} />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:image" content={new URL('/tomas-ferrer.png', Astro.site)} />
+    <meta name="theme-color" content="#172a2a" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar">
+      <a class="identity" href="/" aria-label="Tomas Ferrer home">
+        <img src="/tomas-ferrer.png" width="800" height="800" alt="Tomas Ferrer" />
+        <span class="identity-copy"><strong>Tomas Ferrer<span class="accent">.</span></strong><span>Product Data Scientist</span></span>
+      </a>
+      <div class="sidebar-rule"></div>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="navigation">Explore <span aria-hidden="true">＋</span></button>
+      <nav id="navigation" aria-label="Main navigation">
+        {nav.map(([id, label], index) => <a href={`${home ? '' : '/'}#${id}`} data-section={id} class:list={{ active: home && index === 0 }} aria-current={home && index === 0 ? 'location' : undefined}><span class="nav-number">0{index + 1}</span>{label}<span class="nav-arrow" aria-hidden="true">↗</span></a>)}
+      </nav>
+      <div class="sidebar-bottom"><span class="small-label">A PERSONAL CORNER OF THE INTERNET</span><a href="https://tomasferrer.com">tomasferrer.com <span aria-hidden="true">↗</span></a>{profile.cv && <a href={profile.cv} download>Download CV ↓</a>}</div>
+    </aside>
+    <main id="main" tabindex="-1"><slot /><footer><span>© {new Date().getFullYear()} Tomas Ferrer</span><span>Made with care & Astro.</span><a href="#main">Back to top ↑</a></footer></main>
+    <script>
+      const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+      const navigation = document.querySelector<HTMLElement>('#navigation');
+      function closeMenu() { toggle?.setAttribute('aria-expanded', 'false'); navigation?.classList.remove('is-open'); }
+      toggle?.addEventListener('click', () => { const open = toggle.getAttribute('aria-expanded') !== 'true'; toggle.setAttribute('aria-expanded', String(open)); navigation?.classList.toggle('is-open', open); });
+      navigation?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+      document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeMenu(); toggle?.focus(); } });
+      const sections = [...document.querySelectorAll<HTMLElement>('section[id]')];
+      if (sections.length) {
+        const links = [...document.querySelectorAll<HTMLAnchorElement>('nav a[data-section]')];
+        const update = () => {
+          const threshold = window.innerWidth <= 800 ? 180 : 200;
+          let current = sections[0].id;
+          for (const section of sections) if (section.getBoundingClientRect().top <= threshold) current = section.id;
+          if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8) current = sections[sections.length - 1].id;
+          links.forEach(link => { const active = link.dataset.section === current; link.classList.toggle('active', active); if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current'); });
+        };
+        let queued = false;
+        window.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(() => { update(); queued = false; }); } }, { passive: true });
+        window.addEventListener('resize', update); update();
+      }
+    </script>
+  </body>
+</html>
