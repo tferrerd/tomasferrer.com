@@ -81,7 +81,7 @@ export const profile = {
     {
       institution: 'Instituto Tecnológico de Buenos Aires',
       logo: '/logos/itba.png',
-      degree: 'Bachelor of Science, Industrial Engineering',
+      degree: 'Engineering Diploma, Industrial Engineering',
       dates: 'Dec 2012',
       detail: 'Exchange: University of Pennsylvania',
     },
