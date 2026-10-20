@@ -2,9 +2,9 @@
 const endpoint = import.meta.env.PUBLIC_AGENT_URL;
 ---
 {endpoint && <div class="profile-chat" data-endpoint={endpoint}>
-  <button class="chat-launch" aria-expanded="false" aria-controls="profile-chat-panel">Ask me something <span aria-hidden="true">↗</span></button>
+  <button class="chat-launch" aria-expanded="false" aria-controls="profile-chat-panel"><img src="/bot.svg" width="28" height="28" alt="" aria-hidden="true" /><span>Talk to my AI agent</span><span class="chat-arrow" aria-hidden="true">↗</span></button>
   <section id="profile-chat-panel" class="chat-panel" aria-labelledby="chat-title" hidden>
-    <header><div><span class="eyebrow">TOM’S AI ASSISTANT</span><h2 id="chat-title">Ask me something</h2></div><button class="chat-close" aria-label="Close AI guide">×</button></header>
+    <header><div><span class="eyebrow"><img src="/bot.svg" width="24" height="24" alt="" aria-hidden="true" /> TOM’S AI ASSISTANT</span><h2 id="chat-title">Talk to my AI agent</h2></div><button class="chat-close" aria-label="Close AI guide">×</button></header>
     <div class="chat-messages" role="log" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div>
     <div class="chat-suggestions"><button type="button">What did you do at Cash App?</button><button type="button">Tell me about your projects.</button></div>
     <form><label for="profile-question" class="sr-only">Your question about Tom</label><div class="chat-input"><input id="profile-question" name="question" maxlength="1500" required autocomplete="off" placeholder="What would you like to know?" /><button type="submit">Ask ↗</button></div></form>
@@ -87,7 +87,7 @@ const endpoint = import.meta.env.PUBLIC_AGENT_URL;
 </script>
 <style>
   .profile-chat{position:fixed;right:24px;bottom:24px;z-index:30;font-size:13px}
-  button{cursor:pointer}.chat-launch{background:var(--green);color:var(--lime);border:1px solid #ffffff30;border-radius:4px;padding:13px 20px;box-shadow:0 5px 25px #172a2a25;display:flex;gap:30px;align-items:center}
+  button{cursor:pointer}.chat-launch{background:var(--green);color:var(--lime);border:1px solid #ffffff30;border-radius:4px;padding:11px 18px;box-shadow:0 5px 25px #172a2a25;display:flex;gap:12px;align-items:center}.chat-launch img{display:block;flex-shrink:0}.chat-arrow{margin-left:8px}.eyebrow img{background:var(--green);border-radius:5px;padding:2px}
   .chat-panel{position:absolute;right:0;bottom:62px;width:min(410px,calc(100vw - 32px));max-height:calc(100dvh - 160px);overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:22px;box-shadow:0 12px 60px #172a2a35}
   [hidden]{display:none!important}header{display:flex;justify-content:space-between;gap:15px}h2{font-size:25px;margin:8px 0 12px;letter-spacing:-.8px}h2 i{font-family:var(--serif);color:#556a48}.chat-close{align-self:start;background:none;border:0;font-size:25px;color:var(--ink);padding:0 3px}
   .chat-messages{max-height:32dvh;overflow-y:auto;overscroll-behavior:contain}.chat-messages:empty{display:none}.chat-suggestions{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}.chat-suggestions button{text-align:left;background:#eaf0df;border:1px solid #d3ddc3;padding:9px 12px;border-radius:3px;font-size:12px;color:#3b503b}
