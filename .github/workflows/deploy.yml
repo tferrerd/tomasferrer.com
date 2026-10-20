@@ -24,6 +24,8 @@ jobs:
         uses: actions/checkout@v7
       - name: Check agent HTTP handling
         run: node --test agent/server.test.mjs
+      - name: Verify agent container build
+        run: docker build --tag tomas-profile-agent:ci .
       - name: Build and upload Astro site
         uses: withastro/action@v6
         with:
