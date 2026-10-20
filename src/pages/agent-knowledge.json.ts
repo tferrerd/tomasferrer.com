@@ -4,7 +4,7 @@ import workbench from './projects/payment-risk-workbench.astro?raw';
 import websiteAgent from './projects/website-ai-agent.astro?raw';
 
 // Use public website sources only; private job-search files never enter the agent.
-const plainText = (source: string) => source.replace(/^---[\s\S]*?---/, '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+const plainText = (source: string) => source.replace(/^---[\s\S]*?---/, '').replace(/<(style|script|pre)\b[^>]*>[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 export function GET() {
   return Response.json({
     profile,
