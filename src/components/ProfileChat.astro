@@ -64,7 +64,7 @@ const endpoint = import.meta.env.PUBLIC_AGENT_URL;
         // Only render links from the site's own source allowlist.
         const sources = document.createElement('p'); sources.className = 'chat-sources';
         for (const source of data.sources || []) {
-          if (!['https://tomasferrer.com/#experience', 'https://tomasferrer.com/#work', 'https://tomasferrer.com/projects/payment-risk-workbench/'].includes(source.url)) continue;
+          if (!['https://tomasferrer.com/#experience', 'https://tomasferrer.com/#work', 'https://tomasferrer.com/projects/website-ai-agent/', 'https://tomasferrer.com/projects/payment-risk-workbench/'].includes(source.url)) continue;
           const link = document.createElement('a'); link.href = source.url; link.textContent = source.title; sources.append(link);
         }
         log.append(sources); log.scrollTop = log.scrollHeight;
