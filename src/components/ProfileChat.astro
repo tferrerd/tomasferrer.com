@@ -1,0 +1,97 @@
+---
+const endpoint = import.meta.env.PUBLIC_AGENT_URL;
+---
+{endpoint && <div class="profile-chat" data-endpoint={endpoint}>
+  <button class="chat-launch" aria-expanded="false" aria-controls="profile-chat-panel">Ask me something <span aria-hidden="true">↗</span></button>
+  <section id="profile-chat-panel" class="chat-panel" aria-labelledby="chat-title" hidden>
+    <header><div><span class="eyebrow">TOM’S AI ASSISTANT</span><h2 id="chat-title">Ask me something</h2></div><button class="chat-close" aria-label="Close AI guide">×</button></header>
+    <div class="chat-messages" role="log" aria-label="Conversation" aria-live="polite" aria-relevant="additions"></div>
+    <div class="chat-suggestions"><button type="button">What did you do at Cash App?</button><button type="button">Tell me about your projects.</button></div>
+    <form><label for="profile-question" class="sr-only">Your question about Tom</label><div class="chat-input"><input id="profile-question" name="question" maxlength="1500" required autocomplete="off" placeholder="What would you like to know?" /><button type="submit">Ask ↗</button></div></form>
+    <p class="chat-status" role="status"></p>
+    <div class="chat-bottom"><button type="button" class="chat-clear">Clear conversation</button><a href="mailto:hello@tferrer.com">Contact Tom ↗</a></div>
+  </section>
+</div>}
+<script>
+  const root = document.querySelector<HTMLElement>('.profile-chat');
+  if (root) {
+    const launch = root.querySelector<HTMLButtonElement>('.chat-launch')!;
+    const panel = root.querySelector<HTMLElement>('.chat-panel')!;
+    const close = root.querySelector<HTMLButtonElement>('.chat-close')!;
+    const form = root.querySelector<HTMLFormElement>('form')!;
+    const input = root.querySelector<HTMLInputElement>('input')!;
+    const submit = form.querySelector<HTMLButtonElement>('button')!;
+    const log = root.querySelector<HTMLElement>('.chat-messages')!;
+    const status = root.querySelector<HTMLElement>('.chat-status')!;
+    const suggestions = root.querySelector<HTMLElement>('.chat-suggestions')!;
+    let messages: { role: 'user' | 'assistant'; content: string }[] = [];
+    let pending = false;
+    function setOpen(open: boolean) {
+      panel.hidden = !open;
+      launch.setAttribute('aria-expanded', String(open));
+      (open ? input : launch).focus();
+    }
+    launch.addEventListener('click', () => setOpen(panel.hidden));
+    close.addEventListener('click', () => setOpen(false));
+    root.addEventListener('keydown', event => { if (event.key === 'Escape') { event.stopPropagation(); setOpen(false); } });
+    function addMessage(role: string, text: string) {
+      const message = document.createElement('p');
+      message.className = `chat-message ${role}`;
+      const label = document.createElement('strong');
+      label.textContent = role === 'user' ? 'You' : 'Tom · AI';
+      const content = document.createElement('span');
+      content.textContent = text;
+      message.append(label, content); log.append(message);
+      log.scrollTop = log.scrollHeight;
+    }
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const question = input.value.trim();
+      if (!question || pending) return;
+      pending = true; submit.disabled = true; input.disabled = true;
+      suggestions.hidden = true; status.textContent = 'Thinking…';
+      addMessage('user', question); input.value = '';
+      const next = [...messages.slice(-8), { role: 'user' as const, content: question }];
+      try {
+        const response = await fetch(`${root.dataset.endpoint!.replace(/\/$/, '')}/chat`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: next }), signal: AbortSignal.timeout(70_000),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'The guide is unavailable. Please try again.');
+        if (typeof data.answer !== 'string' || !data.answer.trim()) throw new Error('No answer was returned. Please try again.');
+        addMessage('assistant', data.answer);
+        // Only render links from the site's own source allowlist.
+        const sources = document.createElement('p'); sources.className = 'chat-sources';
+        for (const source of data.sources || []) {
+          if (!['https://tomasferrer.com/#experience', 'https://tomasferrer.com/#work', 'https://tomasferrer.com/projects/payment-risk-workbench/'].includes(source.url)) continue;
+          const link = document.createElement('a'); link.href = source.url; link.textContent = source.title; sources.append(link);
+        }
+        log.append(sources); log.scrollTop = log.scrollHeight;
+        messages = [...next, { role: 'assistant', content: data.answer.slice(0, 1500) }];
+        status.textContent = '';
+      } catch (error) {
+        status.textContent = error instanceof TypeError ? 'The guide could not connect. Please try again later or contact Tom.' : error instanceof Error && error.name !== 'TimeoutError' ? error.message : 'The guide took too long. Please try again or contact Tom.';
+        input.value = question;
+      } finally {
+        pending = false; submit.disabled = false; input.disabled = false;
+        if (!panel.hidden) input.focus();
+      }
+    });
+    suggestions.querySelectorAll('button').forEach(button => button.addEventListener('click', () => { input.value = button.textContent || ''; form.requestSubmit(); }));
+    root.querySelector('.chat-clear')!.addEventListener('click', () => {
+      if (pending) return;
+      messages = []; log.replaceChildren(); status.textContent = ''; suggestions.hidden = false; input.value = ''; input.focus();
+    });
+  }
+</script>
+<style>
+  .profile-chat{position:fixed;right:24px;bottom:24px;z-index:30;font-size:13px}
+  button{cursor:pointer}.chat-launch{background:var(--green);color:var(--lime);border:1px solid #ffffff30;border-radius:4px;padding:13px 20px;box-shadow:0 5px 25px #172a2a25;display:flex;gap:30px;align-items:center}
+  .chat-panel{position:absolute;right:0;bottom:62px;width:min(410px,calc(100vw - 32px));max-height:calc(100dvh - 160px);overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:22px;box-shadow:0 12px 60px #172a2a35}
+  [hidden]{display:none!important}header{display:flex;justify-content:space-between;gap:15px}h2{font-size:25px;margin:8px 0 12px;letter-spacing:-.8px}h2 i{font-family:var(--serif);color:#556a48}.chat-close{align-self:start;background:none;border:0;font-size:25px;color:var(--ink);padding:0 3px}
+  .chat-messages{max-height:32dvh;overflow-y:auto;overscroll-behavior:contain}.chat-messages:empty{display:none}.chat-suggestions{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}.chat-suggestions button{text-align:left;background:#eaf0df;border:1px solid #d3ddc3;padding:9px 12px;border-radius:3px;font-size:12px;color:#3b503b}
+  .chat-input{display:flex;gap:7px}.chat-input input{min-width:0;width:100%;border:1px solid #bbc6ae;background:#fff;padding:11px 9px;font:12px var(--sans);border-radius:3px}.chat-input button{background:var(--green);color:var(--lime);border:0;border-radius:3px;padding:8px 14px;white-space:nowrap;font-size:12px}.chat-input button:disabled{opacity:.6;cursor:wait}input:focus-visible{outline:2px solid #899f38;outline-offset:2px}.chat-status{font-size:11px;line-height:1.6;color:#626b63;margin:10px 0}.chat-bottom{display:flex;justify-content:space-between;gap:10px;font-size:10px;color:#626b63}.chat-clear{border:0;padding:0;background:none;color:inherit;font-size:inherit}.chat-bottom a,.chat-clear{text-decoration:underline;text-underline-offset:3px}
+  .chat-messages :global(.chat-message){padding:12px;margin:0 0 10px;background:#eaf0df;border-radius:3px;font-size:12px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.chat-messages :global(.chat-message.user){background:#e6e9e1}.chat-messages :global(strong){display:block;font-size:9px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}.chat-messages :global(.chat-sources){display:flex;gap:10px;flex-wrap:wrap;font-size:9px;margin:0 0 16px}.chat-messages :global(.chat-sources a){text-decoration:underline}
+  @media(max-width:540px){.profile-chat{right:16px;bottom:16px}.chat-panel{padding:18px;max-height:calc(100dvh - 150px)}}
+</style>

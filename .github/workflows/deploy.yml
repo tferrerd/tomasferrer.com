@@ -17,9 +17,13 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_AGENT_URL: ${{ vars.PUBLIC_AGENT_URL }}
     steps:
       - name: Check out source
         uses: actions/checkout@v7
+      - name: Check agent HTTP handling
+        run: node --test agent/server.test.mjs
       - name: Build and upload Astro site
         uses: withastro/action@v6
         with:

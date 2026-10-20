@@ -25,3 +25,9 @@ Set the custom domain to `tomasferrer.com` in Settings → Pages, then configure
 - `public/`: downloadable résumé, photo, and logos.
 
 `npm run build` generates the static site in `dist/`.
+
+## Profile AI guide
+
+The optional “Ask me something” chat uses public website content and a private-key
+backend. See [setup and deployment](docs/profile-agent.md). Set the GitHub Actions
+variable `PUBLIC_AGENT_URL` after deploying the backend to make the launcher visible.

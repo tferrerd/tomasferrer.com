@@ -1,5 +1,6 @@
 ---
 import { profile } from '../data/profile';
+import ProfileChat from '../components/ProfileChat.astro';
 import '../styles/global.css';
 interface Props { title?: string; description?: string; home?: boolean }
 const { title = 'Tomas Ferrer — Product Data Scientist', description = profile.description, home = false } = Astro.props;
@@ -32,6 +33,7 @@ const nav = [['about', 'About me'], ['experience', 'Experience'], ...(profile.ed
       <div class="sidebar-bottom"><a href="https://tomasferrer.com">tomasferrer.com <span aria-hidden="true">↗</span></a>{profile.cv && <a href={profile.cv} download>Download CV ↓</a>}</div>
     </aside>
     <main id="main" tabindex="-1"><slot /><footer><span>© {new Date().getFullYear()} Tomas Ferrer</span><span>Made with care & Astro.</span><a href="#main">Back to top ↑</a></footer></main>
+    <ProfileChat />
     <script>
       const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
       const navigation = document.querySelector<HTMLElement>('#navigation');

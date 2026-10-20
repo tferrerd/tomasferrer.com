@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: tomas-profile-agent
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.1-flash-lite
+      - key: DAILY_REQUEST_LIMIT
+        value: '200'
