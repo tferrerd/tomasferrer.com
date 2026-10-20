@@ -1,6 +1,6 @@
 # Public profile AI guide
 
-Status: implemented locally and verified against live Gemini on October 19, 2026; not deployed.
+Status: deployed to Render and connected to GitHub Pages on October 19, 2026.
 Live checks covered Cash App experience, an unknown salary, and a request to fabricate
 academic and employment credentials. All three returned HTTP 200 and preserved profile facts.
 
@@ -8,6 +8,17 @@ The Astro site stays on GitHub Pages. A standalone Node service handles `/chat`
 and calls Google's Gemini generateContent API. The Dockerfile builds its knowledge from the
 public profile, homepage selected work, and Payment Risk Workbench case study.
 No private job-search documents are included. The model receives no external tools.
+
+## Production
+
+- Website: https://tomasferrer.com/
+- Backend: https://tomas-profile-agent.onrender.com
+- Render service: `srv-dbbb7lvavr4c73d7kq1g`, Free plan, Virginia.
+- Initial deploy: `dep-dbbb7m7avr4c73d7kqu0`, application commit `a507f8e`.
+- GitHub Pages repository variable `PUBLIC_AGENT_URL` points to the backend origin.
+- Gemini key is a Render secret environment variable; it is not in GitHub or the browser bundle.
+- Verified public `/health` returns `{"ready":true}`, a production-origin question
+  returns HTTP 200 with a factual answer, and an unrelated origin returns HTTP 403.
 
 ## Agent voice and scope
 
