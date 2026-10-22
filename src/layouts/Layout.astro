@@ -3,7 +3,7 @@ import { profile } from '../data/profile';
 import ProfileChat from '../components/ProfileChat.astro';
 import '../styles/global.css';
 interface Props { title?: string; description?: string; home?: boolean }
-const { title = 'Tomas Ferrer — Product Data Scientist', description = profile.description, home = false } = Astro.props;
+const { title = 'Tomas Ferrer — Full Stack Data Scientist', description = profile.description, home = false } = Astro.props;
 const nav = [['about', 'About me'], ['experience', 'Experience'], ...(profile.education.length ? [['education', 'Education']] : []), ['work', 'Selected work'], ['skills', 'Skills'], ['contact', 'Contact']];
 ---
 <!doctype html>
@@ -23,7 +23,7 @@ const nav = [['about', 'About me'], ['experience', 'Experience'], ...(profile.ed
     <aside class="sidebar">
       <a class="identity" href="/" aria-label="Tomas Ferrer home">
         <img src="/tomas-ferrer.png" width="800" height="800" alt="Tomas Ferrer" />
-        <span class="identity-copy"><strong>Tomas Ferrer<span class="accent">.</span></strong><span>Product Data Scientist</span></span>
+        <span class="identity-copy"><strong>Tomas Ferrer<span class="accent">.</span></strong><span>Full Stack Data Scientist</span></span>
       </a>
       <div class="sidebar-rule"></div>
       <button class="menu-toggle" aria-expanded="false" aria-controls="navigation">Explore <span aria-hidden="true">＋</span></button>
