@@ -1,7 +1,7 @@
 export const profile = {
   name: 'Tomas Ferrer',
-  role: 'Product Data Scientist',
-  description: 'Tomas Ferrer — Product Data Scientist. Experience, education, and selected work.',
+  role: 'Full Stack Data Scientist',
+  description: 'Tomas Ferrer — Full Stack Data Scientist. Experience, education, and selected work.',
   email: 'hello@tferrer.com',
   linkedin: '',
   github: '',
