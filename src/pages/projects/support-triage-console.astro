@@ -1,0 +1,52 @@
+---
+import Layout from '../../layouts/Layout.astro';
+const policy = `if (categoryConfidence < 0.60 || categoryMargin < 0.20) {
+  return 'human review';
+}
+if (urgentProbability >= 0.35 && urgentProbability <= 0.65) {
+  return 'human review';
+}
+if (urgentProbability >= 0.75 || frustration >= 1.50) {
+  return 'priority';
+}
+return 'routine';`;
+---
+<Layout title="Support Triage Console — Tomas Ferrer" description="Building a Jev-powered support triage app, inspecting uncertainty, and testing whether correct categories lead to useful routing decisions.">
+  <article class="story">
+    <a class="text-link back-link" href="/#work">← Back to selected work</a>
+    <p class="eyebrow">APPLIED AI · OCTOBER 21, 2026</p>
+    <h1>Every ticket.<br /><span class="serif">A clearer next step.</span></h1>
+    <p class="story-lead">A support triage app that exposes its uncertainty, keeps routing rules in code, and lets a person correct the recommendation.</p>
+    <div class="project-links"><a class="text-link" href="https://github.com/tferrerd/10-support-triage-console" target="_blank" rel="noopener noreferrer">View source on GitHub <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><a class="text-link" href="https://10-support-triage-console-3l0u2t4do-tferrerd-gmailcoms-projects.vercel.app" target="_blank" rel="noopener noreferrer">Protected preview · access required <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a></div>
+    <div class="story-meta"><div><span class="eyebrow">MODEL</span><p>Jev · TypeSafe AI</p></div><div><span class="eyebrow">APPLICATION</span><p>Next.js · TypeScript</p></div><div><span class="eyebrow">DEPLOYMENT</span><p>Vercel Preview · Native Firewall</p></div></div>
+    <div class="story-body">
+      <h2>The decision behind the label</h2>
+      <p>A ticket classifier can identify a payment problem and still make the wrong operational recommendation. The useful question is which team should look at it, how quickly, and when a person needs to resolve uncertainty.</p>
+      <p>I built this console with Codex to make those decisions inspectable. A visitor pastes a redacted ticket or selects a synthetic example, then sees a category, recommended team, frustration score, urgency probability, and suggested queue. They can accept or correct the category and urgency, revisit recent analyses, and export the original results alongside their reviews.</p>
+      <p>There are five categories: payments, shipping, technical, returns, and other. The app recommends routing only. It does not send messages, issue refunds, or act on a customer account.</p>
+      <h2>One request, three narrow questions</h2>
+      <p>The server uses TypeSafe's official JavaScript SDK to send one request containing three typed questions. <strong>Choice</strong> selects a category and returns its option probabilities and confidence. <strong>Score</strong> estimates frustration against three descriptive levels. <strong>Noul</strong> returns the probability that urgent attention is needed.</p>
+      <p>The frustration scale runs from 0 for calm, through 1 for frustrated but civil, to 2 for very angry. Its score is a probability-weighted mean, so a value between levels is valid. Confidence describes the returned distribution; it is not a guarantee of correctness. Noul has no separate confidence field, and the interface does not invent one.</p>
+      <p>The ticket enters the request as untrusted content. Fixed question instructions tell the model to evaluate the issue rather than obey instructions embedded in the message. Input and response validation, timeouts, and visible upstream errors support that boundary without claiming that prompting eliminates every failure mode.</p>
+      <h2>Keep the queue policy in code</h2>
+      <p>The model provides signals; ordinary TypeScript chooses the queue. The initial policy sends uncertain categories and middle-range urgency probabilities to human review. High urgency or frustration gets priority. Remaining tickets go to routine support.</p>
+      <figure class="code-example"><figcaption>Queue policy · initial thresholds</figcaption><pre tabindex="0" aria-label="TypeScript queue policy"><code>{policy}</code></pre></figure>
+      <p>These values are starting assumptions that need evaluation against error costs and representative tickets. The app preserves its original recommendations when a reviewer changes the category or urgency, so the exported corrections can support later analysis.</p>
+      <h2>The first live evaluation found a routing gap</h2>
+      <p>I ran the entire eight-ticket synthetic smoke set against <code>jev-1.13.0</code>, with one paid request per ticket and automatic retries disabled. All eight category labels and binary urgency decisions matched the authored labels. No requests failed.</p>
+      <p>However, the share sent to human review was <strong>0 of 8</strong>. The deliberately ambiguous ticket was classified as <code>other</code> and routed to <code>routine</code>, even though the scenario called for a person to investigate. A correct category did not make the routing recommendation appropriate.</p>
+      <p>That is the most useful finding from this first pass. The eight examples are a small, manually authored smoke set, not evidence of general accuracy or business impact. I preserved the result instead of tuning the thresholds against those same examples and reporting an improved score. The next step is a larger held-out evaluation that measures routing mistakes and the trade-off between review coverage and automation.</p>
+      <p>The <a href="https://github.com/tferrerd/10-support-triage-console/blob/main/evaluations/2026-10-21-live.json" target="_blank" rel="noopener noreferrer">saved evaluation artifact</a> records the model, dataset checksum, request count, outcomes, and limitation. Exact billed cost was not captured.</p>
+      <h2>A demo that stays honest about its mode</h2>
+      <p>Demo mode works without credentials and uses clearly labeled, fixed sample results. Its ambiguous example illustrates human review, but those authored numbers do not predict what the live model will return. A failed live request produces an error; it never silently substitutes a sample result.</p>
+      <p>History stays in browser localStorage on the current device and browser, with an explicit clear action. It is not synchronized between devices. The server does not persist or log ticket bodies, and visitors are asked to use synthetic or redacted messages.</p>
+      <h2>Protect the paid path</h2>
+      <p>The API key is a server-only environment variable. Live requests require an access code, and Vercel's native Firewall enforces a shared limit of ten attempts per minute in each serving region. The endpoint fails closed if the firewall check is unavailable or the rule is missing. Regional rate limits are not an exact global spending cap.</p>
+      <p>The current deployment is a protected Vercel Preview, so it requires Vercel access as well as the app's live access code. It is not an anonymously accessible public demo. The repository includes the setup needed to run its free demo locally.</p>
+      <h2>What is verified, and what is next</h2>
+      <p>Seven automated tests cover response parsing, queue rules, input validation, SDK request serialization, and protection of the live endpoint. Lint, the production build, desktop and mobile browser flows, and hosted checks for successful inference, rejected access codes, and rate limiting passed.</p>
+      <p>This is a working hosted-model application. It does not claim to complete the separate BANKING77 training and MLOps research brief preserved in the repository. Before using it operationally, I would expand the labeled evaluation, measure missed review cases, and choose routing thresholds using explicit costs.</p>
+      <p>Technical references: <a href="https://docs.typesafe.ai/introduction/quickstart" target="_blank" rel="noopener noreferrer">TypeSafe quick start</a>, <a href="https://docs.typesafe.ai/confidence" target="_blank" rel="noopener noreferrer">confidence semantics</a>, and <a href="https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting-sdk" target="_blank" rel="noopener noreferrer">Vercel's rate limiting SDK</a>.</p>
+    </div>
+  </article>
+</Layout>
