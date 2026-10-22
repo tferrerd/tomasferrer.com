@@ -9,7 +9,7 @@ const plainText = (source: string) => source.replace(/^---[\s\S]*?---/, '').repl
 export function GET() {
   return Response.json({
     profile,
-    about: 'Tomas is a full stack data scientist based in the New York Metro area. He values asking the right questions, explicit assumptions, and evidence that clarifies decisions.',
+    about: 'Tomas is a full stack data scientist based in the New York Metro area. He builds data and AI systems that turn analysis and machine learning into useful products and better decisions. He values clear assumptions, reliable engineering, and evidence that supports decisions.',
     selectedWork: plainText(home.slice(home.indexOf('<section id="work"'), home.indexOf('<section id="skills"'))),
     paymentRiskWorkbench: plainText(workbench),
     websiteAiAgent: plainText(websiteAgent),
