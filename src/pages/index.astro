@@ -39,5 +39,5 @@ import { profile } from '../data/profile';
     <div class="section-heading"><span class="eyebrow">04 / THE TOOLKIT</span><h2>Skills<span class="accent-dark">.</span></h2></div>
     <div class="skills-grid">{profile.skills.map(group => <div class="skill-group"><h3>{group.category}</h3><ul>{group.items.map(skill => <li>{skill}</li>)}</ul></div>)}</div>
   </section>
-  <section id="contact" class="content-section contact"><span class="eyebrow">05 / KEEP IN TOUCH</span><h2>Good conversations<br />start with <span class="serif">hello.</span></h2>{profile.email ? <a class="contact-link" href={`mailto:${profile.email}`}>{profile.email} <span aria-hidden="true">↗</span></a> : <p>Public contact details are coming soon.</p>}<div class="contact-socials">{profile.linkedin && <a href={profile.linkedin}>LinkedIn ↗</a>}{profile.github && <a href={profile.github}>GitHub ↗</a>}</div></section>
+  <section id="contact" class="content-section contact"><span class="eyebrow">05 / Let’s talk</span>{profile.email ? <a class="contact-link" href={`mailto:${profile.email}`}>{profile.email.replace("@", " (at) ")} <span aria-hidden="true">↗</span></a> : <p>Public contact details are coming soon.</p>}<div class="contact-socials">{profile.linkedin && <a href={profile.linkedin}>LinkedIn ↗</a>}{profile.github && <a href={profile.github}>GitHub ↗</a>}</div></section>
 </Layout>
