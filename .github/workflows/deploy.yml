@@ -22,6 +22,10 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@v7
+      - name: Use patched Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.22.1
       - name: Check agent HTTP handling
         run: node --test agent/server.test.mjs
       - name: Verify agent container build
@@ -29,7 +33,7 @@ jobs:
       - name: Build and upload Astro site
         uses: withastro/action@v6
         with:
-          node-version: 24
+          node-version: 24.22.1
   deploy:
     needs: build
     runs-on: ubuntu-latest

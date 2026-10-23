@@ -4,7 +4,7 @@ Astro source for https://tomasferrer.com.
 
 ## Local development
 
-Use Node.js 24 LTS, then run:
+Use Node.js 24.22.1 or a newer patched 24.x LTS release, then run:
 
 ```sh
 npm ci
