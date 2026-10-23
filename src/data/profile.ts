@@ -3,8 +3,9 @@ export const profile = {
   role: 'Full Stack Data Scientist',
   description: 'Tomas Ferrer — Full Stack Data Scientist building data and AI systems that turn analysis and machine learning into useful products and better decisions.',
   email: 'hello@tferrer.com',
-  linkedin: '',
-  github: '',
+  linkedin: 'https://www.linkedin.com/in/tomas-ferrer',
+  github: 'https://github.com/tferrerd',
+  x: 'https://x.com/tferrer10',
   cv: '/tomas-ferrer-resume.pdf',
   skills: [
     { category: 'Programming & data', items: ['Python', 'SQL', 'Data engineering'] },
